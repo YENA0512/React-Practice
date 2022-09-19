@@ -16,9 +16,6 @@ r.question(`${num1} + ${num2} =  ? \n`, (userInput) => {
 	if (userInput.trim() == result) {
 		r.close();
 	} else {
-		//r.setPrompt('틀렷습니다 다시 시도하세요 \n');
-		//r.prompt();
-
 		r.on('line', (userInput) => {
 			if (userInput.trim() == result) r.close();
 			else {
@@ -32,4 +29,5 @@ r.question(`${num1} + ${num2} =  ? \n`, (userInput) => {
 r.on('close', () => {
 	console.log(` 정답 입니다! `);
 	console.log(` 프로그램 종료 `);
+	process.exit();
 });

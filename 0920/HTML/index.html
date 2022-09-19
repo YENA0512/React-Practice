@@ -36,14 +36,17 @@
 
       <script>
         const section = document.querySelector('section');
-        const h2 = document.createElement('h2');
+        const h3 = document.querySelector('h3');
 
+        h3.textContent ='자바스크립트에서 넣어준 내용';
+
+        const div = document.createElement('div');
+        section.append(div,"태그 생성");
+
+        const h2 = document.createElement('h2');
         h2.setAttribute('class','title');
         h2.textContent ='javascript';
         section.appendChild(h2); 
-
-        const h3 = document.querySelector('h3');
-        h3.textContent ='자바스크립트에서 넣어준 내용';
 
         section.innerHTML+=`
         <h2 class="title"> 안녕하세요 </h2>

@@ -26,3 +26,19 @@ function print(num) {
 
 print(12);
 print(-12);
+
+// 표현식
+let callName = function printName() {
+	console.log('박연미');
+};
+
+callName();
+
+//무명함수 
+let multiply = (a, b) {
+	return a * b;
+  };
+console.log(multiply(10, 20));
+// 화살표 함수 
+let minus = (a, b) => a - b;
+console.log(minus(10, 20));

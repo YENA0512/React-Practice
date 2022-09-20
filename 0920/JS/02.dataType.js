@@ -3,6 +3,18 @@ let integer = 10;
 let negative = -10;
 let double = 3.14;
 
+
+let binary = 0b0100001;
+let octal = 0o101;
+let hex = 0xb1;
+let bigInt = 123232232332322322222222;
+console.log(binary);
+console.log(octal);
+console.log(hex);
+console.log(bigInt);
+console.log('---------');
+
+
 console.log(10 + 3);
 console.log(10 - 3);
 console.log(10 * 3);

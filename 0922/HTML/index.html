@@ -38,7 +38,46 @@
   <div class="box"></div>
   <h1 class="btn move"> 네모 움직여 </h1>
   <script>
+    const btnSet = document.querySelectorAll('.btn'); // [HTMLbuttonElement ]
+    const btn1 = btnSet[0];
+    const btn2 = btnSet[1];
+    const btn3 = btnSet[2];
+    // 이벤트 등록 첫번째 방법 
+    btn1.onclick = function(){
+      alert('클릭했다');
+    }
+    // 이벤트를 등록하는 두번째 방법 
+    function clicked(){
+      alert('클릭했다');
+    }
+    function secondClick(){
+      alert(event.currentTarget );
+      alert(event.type  );
+      alert(event.target.textContent  );
+    }
+    btn1.onclick = secondClick;
 
+    btn3.addEventListener('click' , () => { 
+      clicked();
+    })
+    btn3.addEventListener('click' , () => { 
+      //secondClick();
+      alert(event.currentTarget );
+      alert(event.type  );
+      alert(event.target.textContent  );
+    })
+    const moveBtn = document.querySelector('.move');
+    const box = document.querySelector('.box');
+    moveBtn.addEventListener('mouseover',()=>{
+      box.style.transition ='transform 1s ease-in';
+      box.style.transform ='translateX(400px)';
+      moveBtn.textContent ='네모 돌아와';
+    })
+    moveBtn.addEventListener('mouseout', ()=>{
+      box.style.transition ='transform 1s ease-in';
+      box.style.transform ='translateX(0px)';
+      moveBtn.textContent ='네모 움직여';
+    })
   </script>
 </body>
 

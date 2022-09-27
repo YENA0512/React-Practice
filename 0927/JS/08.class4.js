@@ -25,7 +25,7 @@ class Counter {
 		if (start < 0) {
 			this.#value = 0;
 		} else {
-			this.#value = count;
+			this.#value = start;
 		}
 	}
 

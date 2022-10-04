@@ -1,8 +1,9 @@
 // Spread 연산자, 전개구문
 
-console.log(...arr1);
-let a = { ...arr1 };
-let b = [...arr1];
+let arr = [1, 2, 3, 4];
+console.log(...arr);
+let a = { ...arr };
+let b = [...arr];
 console.log(a);
 console.log(b);
 

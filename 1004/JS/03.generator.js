@@ -35,9 +35,9 @@ console.log(resultObj);
 console.log('---------------------');
 
 function* evenGenerator() {
-	for (let i = 0; i < 5; i++) {
-		console.log('i=', i);
-		yield (i + 1) * 2 - 2;
+	const max = 5;
+	for (let i = 0; i < max; ) {
+		yield i++ * 2;
 	}
 }
 

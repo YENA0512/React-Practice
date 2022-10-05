@@ -1,30 +1,46 @@
-function getCat() {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve({ kind: '고양이', name: '나비' });
-		}, 1000);
+const myPromise = () => {
+	return new Promise((resolve, reject) => {
+		resolve('One');
 	});
-}
+};
 
-function getDog() {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve({ kind: '강아지', name: '바둑이' });
-		}, 3000);
-	});
-}
+const myFunc = async () => {
+	console.log('Inner function');
+	console.log(await myPromise());
+	console.log('goOut function');
+};
 
-function getHamster() {
-	return Promise.reject(new Error('햄스터 도망감'));
-}
+console.log('Before Function');
+myFunc();
+console.log('After Function');
 
-async function getPets() {
-	let cat = await getCat();
-	let dog = await getDog();
-	return [cat, dog];
-}
+// function getCat() {
+// 	return new Promise((resolve) => {
+// 		setTimeout(() => {
+// 			resolve({ kind: '고양이', name: '나비' });
+// 		}, 1000);
+// 	});
+// }
 
-getPets().then((pet) => console.log(pet));
+// function getDog() {
+// 	return new Promise((resolve) => {
+// 		setTimeout(() => {
+// 			resolve({ kind: '강아지', name: '바둑이' });
+// 		}, 3000);
+// 	});
+// }
+
+// function getHamster() {
+// 	return Promise.reject(new Error('햄스터 도망감'));
+// }
+
+// async function getPets() {
+// 	let cat = await getCat();
+// 	let dog = await getDog();
+// 	return [cat, dog];
+// }
+
+// getPets().then((pet) => console.log(pet));
 
 // async function getPets() {
 // 	let cat = await getCat();

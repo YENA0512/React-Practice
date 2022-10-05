@@ -23,4 +23,10 @@
 // console.log(rejected);
 // console.log(fulfilled);
 
+// console.log('start');
 
+// setTimeout(() => console.log('setTimeout'), 0);
+
+// Promise.resolve('Promise').then((res) => console.log(res));
+
+// console.log('End');

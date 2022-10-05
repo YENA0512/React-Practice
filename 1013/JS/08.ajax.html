@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+const xhr = new XMLHttpRequest();
+const method = "GET";
+const url = "https://www.7timer.info/bin/astro.php?lon=113.2&lat=23.1&ac=0&unit=metric&output=json&tzshift=0";
+
+// 요청을 초기화 합니다.
+xhr.open(method, url);
+
+xhr.onreadystatechange = () => {
+	  // 서버 응답이 아직 완료되지 않았으면 아무런 처리하지 않는다.
+    if(xhr.readyState !== XMLHttpRequest.DONE) return;
+
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (status === 0 || (status >= 200 && status < 400)) {
+            // 요청이 정상적으로 처리 된 경우
+            console.log('요청 성공');
+            console.log(JSON.parse(xhr.response));
+        } else {
+        // 정상적인 응답을 받지 못하고 에러면 에러상태코드와 메시지 출력
+        console.error('Error', xhr.status, xhr.statusText);
+        }
+    }
+};
+
+// 서버에 요청을 보냅니다.
+xhr.send();
+
+    </script>
+</body>
+</html>

@@ -1,8 +1,9 @@
-const http = require('http');
-const fs = require('fs');
+//const  = require('http');
+import http from 'http';
+import fs from 'fs';
 
 const server = http.createServer((req, res) => {
-	console.log('서버 접속중');
+	console.log('요청들어옴');
 	const url = req.url;
 	res.setHeader('Content-Type', 'text/html');
 	if (url === '/') {
@@ -14,4 +15,6 @@ const server = http.createServer((req, res) => {
 	}
 });
 
-server.listen(801);
+server.listen(3000, () => {
+	console.log('서버 실행');
+});

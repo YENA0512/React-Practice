@@ -18,4 +18,6 @@ app.get('/', (req, res, next) => {
 });
 
 app.use(express.static('public', options));
-app.listen(800);
+app.listen(3000, () => {
+	console.log('서버 실행');
+});

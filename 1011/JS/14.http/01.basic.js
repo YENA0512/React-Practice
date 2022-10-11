@@ -1,11 +1,10 @@
-const http = require('http');
-const fs = require('fs');
+import http from 'http';
+//const fs = require('fs');
 //console.log(http.STATUS_CODES);
 //console.log(http.METHODS);
-console.log('-------- ');
 // http
 const server = http.createServer((req, res) => {
-	console.log('서버 실행 ');
+	console.log('요청 들어옴');
 	console.log('해더 정보 = ', req.headers);
 	console.log('요청 메서드  = ', req.method);
 	console.log('요청 url  = ', req.url);
@@ -21,4 +20,6 @@ const server = http.createServer((req, res) => {
 	res.end(); // 엔드를 안해주면 계속 요청하는 상태
 });
 
-server.listen(800);
+server.listen(3000, () => {
+	console.log('서버 실행');
+});

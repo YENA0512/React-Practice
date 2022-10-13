@@ -50,8 +50,8 @@
             console.log(" 커피내리는 중 ----- ")
         }
 
-        makeOrder(): CoffeeOrder {
-            console.log(" 컵에 커피 담기 완료 ----- ")
+        makeOrder(name: string): CoffeeOrder {
+            console.log(` --- 주문 하신 ${name} 나왔습니다 --- `)
             return {
                 shots: 2,
                 hasMilk: false,
@@ -62,11 +62,12 @@
 
     const machine = new CoffeeMaker(100);
 
+    //machine.addBeans(-100);
     machine.printState();
     machine.preheat();
     machine.grindBean();
     machine.brewCoffee();
-    const americano = machine.makeOrder();
+    const americano = machine.makeOrder('아메리카노');
     console.log(americano);
 
 

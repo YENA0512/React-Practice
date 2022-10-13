@@ -27,7 +27,7 @@
   changeName({ name: '홍길동', age: 3 }, '아이유');
   //changeName({ name: '홍길동', job:'학생' });
 
- 
+
   type NAME = 'name';
   let catName: NAME;
   catName = 'name';

@@ -5,8 +5,6 @@
         hasMilk: boolean;
     };
 
-
-
     class CoffeeMaker {
         private readonly COFFEE_GRAM: number = 10;
         private coffeeBeans: number = 0;

@@ -52,11 +52,11 @@
             console.log(" 커피내리는 중 ----- ")
         }
 
-        makeOrder(): CoffeeOrder | string {
+        makeOrder(name: string): CoffeeOrder | string {
             if (!this.order()) {
                 return "주문 실패 : 죄송합니다";
             }
-            console.log(" 컵에 커피 담기 완료 ----- ")
+            console.log(` --- 주문 하신 ${name} 나왔습니다 --- `)
             return {
                 shots: 2,
                 hasMilk: false,
@@ -79,14 +79,19 @@
 
     }
 
-    const machine = new CoffeeMaker(100);
+    const machine1 = new CoffeeMaker(100);
+    const machine2 = new CoffeeMaker(40);
+    const machine3 = new CoffeeMaker(50);
+    const machine4 = new CoffeeMaker(5);
 
     //machine.addBean(-10);
     // machine.printState();
     // machine.preheat();
     // machine.grindBean();
     // machine.brewCoffee();
-    const americano = machine.makeOrder();
+    const americano = machine1.makeOrder("아메리카노");
+    const coffee = machine4.makeOrder("아메리카노");
     console.log(americano);
+    console.log(coffee);
 
 }

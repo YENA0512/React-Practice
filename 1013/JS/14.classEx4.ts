@@ -2,10 +2,8 @@
 
     type Kinds = '포유류' | '파충류' | '양서류' | '조류';
     abstract class Animal {
-        private name: string;
-        private kind: Kinds;
-        private food: string;
-        constructor(name: string, kind: Kinds, food: string) {
+
+        constructor(protected name: string, private kind: Kinds, protected food: string) {
             this.name = name;
             this.kind = kind;
             this.food = food;
@@ -30,11 +28,16 @@
         cry(): void {
             console.log("냐오오옹")
         }
+        // 메서드 오버라이딩 
+        move(): void {
+            super.move();
+            console.log(` ${this.name} 이 마당으로 탈출해서 이동중.... `);
+        }
 
     }
 
     class Chicken extends Animal {
-        private egg: number = 0;
+        public egg: number = 0;
         constructor(name: string, kind: Kinds, food: string) {
             super(name, kind, food);
         }
@@ -51,7 +54,8 @@
     }
 
     const nabi = new Cat('나비', '포유류', '참치캔');
-    //console.log(nabi);
+
+    console.log(nabi.move());
     nabi.cry();
     nabi.eat();
 

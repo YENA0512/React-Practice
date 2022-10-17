@@ -53,5 +53,5 @@ server.on("request", async (req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log("웹 서버가 포트 3000에서 운영중입니다 🚀");
+  console.log("웹 어플리케이션 서버가 포트 3000에서 운영중입니다 🚀");
 });

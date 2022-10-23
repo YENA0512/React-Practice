@@ -14,7 +14,7 @@ async function main() {
     collection: 'Coffee' // 주의 collection 이름을 명시하지 않으면 아래 mongoose.model의 첫 번째 인자로 전달된 값을 복수형으로 해서 사용한다.
   });
 
-  const Coffee = new mongoose.model("Coffee", coffeeSchema);
+  const Coffee = mongoose.model("Coffee", coffeeSchema);
 
   // 새로운 커피 생성 - Create
   const newCoffee = new Coffee({

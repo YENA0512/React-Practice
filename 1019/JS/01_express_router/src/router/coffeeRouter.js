@@ -36,9 +36,10 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { type, orderedBy, count } = req.body;
   console.log(`PUT /coffees/${id}`);
-  const { type, orderedBy } = req.body;
-  const coffee = updateCoffee({ type, orderedBy });
+  const coffee = updateCoffee(id, { type, orderedBy, count });
   res.json({
     error: null,
     data: coffee,
@@ -46,8 +47,8 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  console.log(`DELETE /coffees/${id}`);
   const { id } = req.params;
+  console.log(`DELETE /coffees/${id}`);
   const coffee = deleteCoffee(id);
   res.json({
     error: null,
@@ -79,6 +80,7 @@ function createCoffee({ type, orderedBy, count }) {
       id: crypto.randomUUID(),
       type,
       orderedBy,
+      count: count ?? 1,
     };
   }
   COFFEE_LIST.push(...createdCoffees);
@@ -99,14 +101,14 @@ function getSingleCoffee(id) {
   throw error;
 }
 
-function updateCoffee(id, { type, orderedBy }) {
+function updateCoffee(id, { type, orderedBy, count }) {
   const coffeeId = COFFEE_LIST.findIndex((coffee) => coffee.id === id);
   if (coffeeId === -1) {
     const error = new Error(`아이디가 '${id}'인 커피를 찾지 못했습니다.`);
     error.statusCode = 400;
     throw error;
   }
-  COFFEE_LIST[coffeeId] = { id, type, orderedBy };
+  COFFEE_LIST[coffeeId] = { id, type, orderedBy, count };
   return COFFEE_LIST[coffeeId];
 }
 

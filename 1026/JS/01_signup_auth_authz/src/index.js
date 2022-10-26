@@ -40,7 +40,7 @@ app.post("/auth/sign-up", async (req, res) => {
     },
   };
 
-  // 권한 설정
+  // 권한 설정: 인가(Authorization)
   if (type === "regular") {
     // 단골 손님은 주문한 커피를 교체 가능하다.
     user.permission.C.coffees = true; // 커피 주문 OK
@@ -78,6 +78,13 @@ app.post("/auth/sign-in", async (req, res, next) => {
 
   const user = USER_LIST.find((user) => user.email === email);
 
+  if (user === undefined) {
+    const error = new Error("email 또는 패스워드가 일치하지 않습니다.");
+    error.statusCode = 400;
+    next(error);
+    return; // 필수!!
+  }
+
   const isValidUser = await bcrypt.compare(password, user.password);
 
   if (!isValidUser) {
@@ -89,8 +96,8 @@ app.post("/auth/sign-in", async (req, res, next) => {
 
   const token = jsonwebtoken.sign(
     {
-      email: user.email,
-      permission: user.permission,
+      em: user.email,
+      pe: user.permission,
     },
     secret,
     { expiresIn: "1h" }
@@ -102,14 +109,15 @@ app.post("/auth/sign-in", async (req, res, next) => {
   });
 });
 
-// Authorization(인가) - jwt pattern
+// Access Control #2 - jwt pattern
 app.use("/coffees", (req, res, next) => {
   if (req.headers["authorization"] === undefined) {
-    res.status(404).json({
+    res.status(403).json({
       error: "coffees에 접근할 수 없는 권한입니다.",
       data: null,
-    }); // HTTP status: forbidden. 401과 404의 차이는?!
+    }); // HTTP status: forbidden. 401과 403의 차이는?!
   }
+  // Authorization: Bearer <token>
   const token = req.headers["authorization"].slice(7); // Bearer Authentication의 접두사인 Bearer 문자열 제거
   const userInfo = jsonwebtoken.verify(token, secret);
 
@@ -117,7 +125,7 @@ app.use("/coffees", (req, res, next) => {
   next();
 });
 
-// crud는 C, R, U, D 중 하나
+// Access Control #1 crud는 C, R, U, D 중 하나
 const checkCoffeeAuthzWith = (crud) => (req, res, next) => {
   const { user } = res.locals;
   if (user.permission[crud]?.coffees) {

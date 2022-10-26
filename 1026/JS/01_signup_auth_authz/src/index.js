@@ -110,7 +110,7 @@ app.use("/coffees", (req, res, next) => {
       data: null,
     }); // HTTP status: forbidden. 401과 404의 차이는?!
   }
-  const token = req.headers["authorization"].slice(7);
+  const token = req.headers["authorization"].slice(7); // Bearer Authentication의 접두사인 Bearer 문자열 제거
   const userInfo = jsonwebtoken.verify(token, secret);
 
   res.locals.user = userInfo;

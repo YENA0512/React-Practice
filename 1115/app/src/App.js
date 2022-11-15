@@ -1,7 +1,9 @@
 import './App.css';
-const Header = ()=>{
+import ReactPlayer from 'react-player'
+
+const Header = ({title})=>{
   return <header>
-    <h1><a href="index.html">WEB</a></h1>
+    <h1><a href="index.html">{title}</a></h1>
   </header>
 }
 const Nav = ()=>{
@@ -13,18 +15,19 @@ const Nav = ()=>{
     </ul>
   </nav>
 }
-const Article = ()=>{
+const Article = ({title, body})=>{
   return <article>
-    <h2>WELCOME</h2>
-    Hello, WEB
+    <h2>{title}</h2>
+    {body}
   </article>
 }
 function App() {
   return (
     <div className="App">
-      <Header/>
+      <Header title="웹"/>
       <Nav/>
-      <Article/>
+      <Article title="어서오세요!" body="웹의 세계로 초대합니다."/>
+      {/* <ReactPlayer url='https://www.youtube.com/watch?v=7fy1eFEkrpU' width={640} /> */}
     </div>
   );
 }

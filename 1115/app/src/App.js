@@ -1,10 +1,10 @@
 import './App.css';
-function Header(){
+const Header = ()=>{
   return <header>
     <h1><a href="index.html">WEB</a></h1>
   </header>
 }
-function Nav(){
+const Nav = ()=>{
   return <nav>
     <ul>
         <li><a href="1.html">html</a></li>
@@ -13,7 +13,7 @@ function Nav(){
     </ul>
   </nav>
 }
-function Article(){
+const Article = ()=>{
   return <article>
     <h2>WELCOME</h2>
     Hello, WEB
@@ -22,9 +22,9 @@ function Article(){
 function App() {
   return (
     <div className="App">
-      <Header />
-      <Nav />
-      <Article />
+      <Header/>
+      <Nav/>
+      <Article/>
     </div>
   );
 }

@@ -1,21 +1,12 @@
 import "./App.css";
 import { useState } from "react";
 import { useImmer } from "use-immer";
-import axios from "axios";
-//import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
-const Header = ({ title, onChangeMode }) => {
+import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
+const Header = ({ title }) => {
   return (
     <header>
       <h1>
-        <a
-          href="index.html"
-          onClick={(evt) => {
-            evt.preventDefault();
-            onChangeMode("WELCOME");
-          }}
-        >
-          {title}
-        </a>
+        <Link to="/">{title}</Link>
       </h1>
     </header>
   );
@@ -23,15 +14,7 @@ const Header = ({ title, onChangeMode }) => {
 const Nav = ({ topics, onChangeMode }) => {
   const liTag = topics.map((t) => (
     <li key={t.id}>
-      <a
-        href={`/read/${t.id}`}
-        onClick={(evt) => {
-          evt.preventDefault();
-          onChangeMode("READ", t.id);
-        }}
-      >
-        {t.title}
-      </a>
+      <Link to={`/read/${t.id}`}>{t.title}</Link>
     </li>
   ));
   return (
@@ -49,25 +32,13 @@ const Article = ({ title, body }) => {
   );
 };
 function Control({ onChangeMode }) {
-  const createClickHandler = (evt) => {
-    evt.preventDefault();
-    onChangeMode("CREATE");
-  };
-  const updateClickHandler = (evt) => {
-    evt.preventDefault();
-    onChangeMode("UPDATE");
-  };
   return (
     <ul>
       <li>
-        <a href="/create" onClick={createClickHandler}>
-          Create
-        </a>
+        <Link to="/create">Create</Link>
       </li>
       <li>
-        <a href="/update" onClick={updateClickHandler}>
-          Update
-        </a>
+        <Link to="/update">Update</Link>
       </li>
     </ul>
   );
@@ -93,51 +64,45 @@ const Create = ({ onSave }) => {
     </form>
   );
 };
+const Read = ({ topics }) => {
+  const params = useParams();
+  const id = Number(params.id);
+  const topic = topics.find((t) => t.id === id);
+  return <Article title={topic.title} body={topic.body}></Article>;
+};
 function App() {
-  const [mode, setMode] = useState("");
-  const [id, setId] = useState(null);
   const [nextId, setNextId] = useState(4);
   const [topics, setTopics] = useImmer([
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
     { id: 3, title: "js", body: "js is ..." },
   ]);
-  const changeModeHandler = (_mode2, id) => {
-    setMode(_mode2);
-    if (id !== undefined) {
-      setId(id);
-    }
-  };
+  const navigate = useNavigate();
   const saveHandler = (title, body) => {
-    const newTopics = [...topics];
-    //title,body를 이용해서 topics의 값 추가
-    // newTopics.push({ id: nextId, title, body });
-    // setTopics(newTopics);
     setTopics((draft) => {
       draft.push({ id: nextId, title, body });
     });
-    setMode("READ");
-    setId(nextId);
+    //url으르 생성된 컨텐츠의 주소로 변경
+    navigate(`/read/${nextId}`);
     setNextId((oldNextId) => oldNextId + 1);
   };
-  let content = null;
-  if (mode === "WELCOME") {
-    content = <Article title="Hello" body="Welcome,WEB!" />;
-  } else if (mode === "READ") {
-    const selected = topics.find((t) => t.id === id);
-    content = <Article title={selected.title} body={selected.body} />;
-  } else if (mode === "CREATE") {
-    content = <Create onSave={saveHandler} />;
-  } else if (mode === "UPDATE") {
-    content = <div>Update</div>;
-  }
 
   return (
     <div className="App">
-      <Header title="Web" onChangeMode={changeModeHandler} />
+      <Header title="Web" />
       <Nav topics={topics} />
-      <Control onChangeMode={changeModeHandler}></Control>
-      {content}
+      <Routes>
+        <Route
+          path="/"
+          element={<Article title="Hello" body="Welcome,WEB!" />}
+        ></Route>
+        <Route
+          path="/create"
+          element={<Create onSave={saveHandler}></Create>}
+        ></Route>
+        <Route path="/read/:id" element={<Read topics={topics} />}></Route>
+      </Routes>
+      <Control></Control>
     </div>
   );
 }

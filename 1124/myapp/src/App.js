@@ -68,16 +68,24 @@ const Create = ({ onSave }) => {
 const Read = ({ topics }) => {
   const params = useParams();
   const id = Number(params.id);
-  const topic = topics.find((t) => t.id === id);
-  return <Article title={topic.title} body={topic.body}></Article>;
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  useEffect(() => {
+    axios.get(`/topics/${id}`).then((result) => {
+      console.log("result.data", result.data);
+      setTitle(result.data.title);
+      setBody(result.data.body);
+    });
+  }, [id]); //id값이 바꼇을때만 실행
+
+  return <Article title={title} body={body}></Article>;
 };
 function App() {
   const [nextId, setNextId] = useState(4);
   const [topics, setTopics] = useImmer([]);
   const fetchTopics = async () => {
-    const topics = await axios.get("http://localhost:3232/topics");
-    console.log("topics", topics);
-    setTopics(topics.data);
+    const _topics = await axios.get("/topics");
+    setTopics(_topics.data);
   };
   //useEffect는 async await을 안받는다. 고로 따로 함수 만들어서 넣어줌
   useEffect(() => {

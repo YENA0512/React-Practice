@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState } from "react";
+import { useImmer } from "use-immer";
 import axios from "axios";
 //import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 const Header = ({ title, onChangeMode }) => {
@@ -96,7 +97,7 @@ function App() {
   const [mode, setMode] = useState("");
   const [id, setId] = useState(null);
   const [nextId, setNextId] = useState(4);
-  const [topics, setTopics] = useState([
+  const [topics, setTopics] = useImmer([
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
     { id: 3, title: "js", body: "js is ..." },
@@ -110,8 +111,11 @@ function App() {
   const saveHandler = (title, body) => {
     const newTopics = [...topics];
     //title,body를 이용해서 topics의 값 추가
-    newTopics.push({ id: nextId, title, body });
-    setTopics(newTopics);
+    // newTopics.push({ id: nextId, title, body });
+    // setTopics(newTopics);
+    setTopics((draft) => {
+      draft.push({ id: nextId, title, body });
+    });
     setMode("READ");
     setId(nextId);
     setNextId((oldNextId) => oldNextId + 1);

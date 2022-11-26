@@ -1,6 +1,7 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
+import axios from "axios";
 import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 const Header = ({ title }) => {
   return (
@@ -72,11 +73,16 @@ const Read = ({ topics }) => {
 };
 function App() {
   const [nextId, setNextId] = useState(4);
-  const [topics, setTopics] = useImmer([
-    { id: 1, title: "html", body: "html is ..." },
-    { id: 2, title: "css", body: "css is ..." },
-    { id: 3, title: "js", body: "js is ..." },
-  ]);
+  const [topics, setTopics] = useImmer([]);
+  const fetchTopics = async () => {
+    const topics = await axios.get("http://localhost:3232/topics");
+    console.log("topics", topics);
+    setTopics(topics.data);
+  };
+  //useEffect는 async await을 안받는다. 고로 따로 함수 만들어서 넣어줌
+  useEffect(() => {
+    fetchTopics();
+  }, []);
   const navigate = useNavigate();
   const saveHandler = (title, body) => {
     setTopics((draft) => {

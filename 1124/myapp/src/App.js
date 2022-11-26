@@ -81,7 +81,6 @@ const Read = ({ topics }) => {
   return <Article title={title} body={body}></Article>;
 };
 function App() {
-  const [nextId, setNextId] = useState(4);
   const [topics, setTopics] = useImmer([]);
   const fetchTopics = async () => {
     const _topics = await axios.get("/topics");
@@ -93,12 +92,13 @@ function App() {
   }, []);
   const navigate = useNavigate();
   const saveHandler = (title, body) => {
-    setTopics((draft) => {
-      draft.push({ id: nextId, title, body });
+    axios.post("/topics", { title, body }).then((result) => {
+      setTopics((draft) => {
+        draft.push(result.data);
+      });
+      //url으르 생성된 컨텐츠의 주소로 변경
+      navigate(`/read/${result.data.id}`);
     });
-    //url으르 생성된 컨텐츠의 주소로 변경
-    navigate(`/read/${nextId}`);
-    setNextId((oldNextId) => oldNextId + 1);
   };
 
   return (

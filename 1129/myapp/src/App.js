@@ -34,14 +34,23 @@ const Article = ({ title, body }) => {
   );
 };
 function Control({ onChangeMode }) {
+  const params = useParams();
+  const id = Number(params.id);
+  let contextUI = null;
+  if (id) {
+    contextUI = (
+      <li>
+        <Link to={`/update/${id}`}>Update</Link>
+      </li>
+    );
+  }
+  console.log("id", id);
   return (
     <ul>
       <li>
         <Link to="/create">Create</Link>
       </li>
-      <li>
-        <Link to="/update">Update</Link>
-      </li>
+      {contextUI}
     </ul>
   );
 }
@@ -59,6 +68,69 @@ const Create = ({ onSave }) => {
       </p>
       <p>
         <textarea name="body" placeholder="body"></textarea>
+      </p>
+      <p>
+        <input type="submit" value="Create" />
+      </p>
+    </form>
+  );
+};
+const Update = ({ onSave }) => {
+  const params = useParams();
+  const id = Number(params.id);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [author, setAuthor] = useState("egoing");
+  useEffect(() => {
+    axios.get(`/topics/${id}`).then((result) => {
+      console.log("result.data", result.data);
+      setTitle(result.data.title);
+      setBody(result.data.body);
+    });
+  }, [id]);
+  const submitHandler = (evt) => {
+    evt.preventDefault();
+    const title = evt.target.title.value;
+    const body = evt.target.body.value;
+    onSave(title, body);
+  };
+  const titleHandler = (evt) => {
+    console.log(evt.target.value);
+    setTitle(evt.target.value);
+  };
+  const bodyHandler = (evt) => {
+    console.log(evt.target.value);
+    setBody(evt.target.value);
+  };
+  const authorHandler = (evt) => {
+    setAuthor(evt.target.value);
+  };
+  return (
+    <form onSubmit={submitHandler}>
+      <p>
+        <input
+          type="text"
+          name="title"
+          placeholder="title"
+          value={title}
+          onChange={titleHandler}
+        />
+      </p>
+      <p>
+        <textarea
+          name="body"
+          placeholder="body"
+          value={body}
+          onChange={bodyHandler}
+        ></textarea>
+      </p>
+      <p>
+        <input
+          type="text"
+          name="author"
+          value={author}
+          onChange={authorHandler}
+        />
       </p>
       <p>
         <input type="submit" value="Create" />
@@ -114,7 +186,17 @@ function App() {
           path="/create"
           element={<Create onSave={saveHandler}></Create>}
         ></Route>
+        <Route
+          path="/update/:id"
+          element={<Update onSave={saveHandler}></Update>}
+        ></Route>
         <Route path="/read/:id" element={<Read />}></Route>
+      </Routes>
+      <Routes>
+        <Route path="/" element={<Control></Control>} />
+        <Route path="/read/:id" element={<Control></Control>} />
+        <Route path="/create" element={<Control></Control>} />
+        <Route path="/update/:id" element={<Control></Control>} />
       </Routes>
       <Control></Control>
     </div>

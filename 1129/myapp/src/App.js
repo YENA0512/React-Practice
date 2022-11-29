@@ -70,7 +70,7 @@ const Create = ({ onSave }) => {
         <textarea name="body" placeholder="body"></textarea>
       </p>
       <p>
-        <input type="submit" value="Create" />
+        <input type="submit" value="Update" />
       </p>
     </form>
   );
@@ -92,7 +92,7 @@ const Update = ({ onSave }) => {
     evt.preventDefault();
     const title = evt.target.title.value;
     const body = evt.target.body.value;
-    onSave(title, body);
+    onSave(id, title, body);
   };
   const titleHandler = (evt) => {
     console.log(evt.target.value);
@@ -164,10 +164,22 @@ function App() {
   }, []);
   console.log("topics", topics);
   const navigate = useNavigate();
-  const saveHandler = (title, body) => {
+  const createHandler = (title, body) => {
     axios.post("/topics", { title, body }).then((result) => {
       setTopics((draft) => {
         draft.push(result.data);
+      });
+      //url으르 생성된 컨텐츠의 주소로 변경
+      navigate(`/read/${result.data.id}`);
+    });
+  };
+  const updateHandler = (id, title, body) => {
+    axios.patch(`/topics/${id}`, { id, title, body }).then((result) => {
+      setTopics((draft) => {
+        const index = draft.findIndex((t) => t.id === id);
+        console.log("index:", index);
+        draft[index].title = title;
+        draft[index].body = body;
       });
       //url으르 생성된 컨텐츠의 주소로 변경
       navigate(`/read/${result.data.id}`);
@@ -184,11 +196,11 @@ function App() {
         ></Route>
         <Route
           path="/create"
-          element={<Create onSave={saveHandler}></Create>}
+          element={<Create onSave={createHandler}></Create>}
         ></Route>
         <Route
           path="/update/:id"
-          element={<Update onSave={saveHandler}></Update>}
+          element={<Update onSave={updateHandler}></Update>}
         ></Route>
         <Route path="/read/:id" element={<Read />}></Route>
       </Routes>
@@ -198,7 +210,6 @@ function App() {
         <Route path="/create" element={<Control></Control>} />
         <Route path="/update/:id" element={<Control></Control>} />
       </Routes>
-      <Control></Control>
     </div>
   );
 }

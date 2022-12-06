@@ -6,7 +6,13 @@ import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import darkSlice from "./features/dark/darkSlice";
-import Like from "./features/like/Like";
+import {
+  useCreateTopicMutation,
+  useDeleteTopicMutation,
+  useGetTopicQuery,
+  useGetTopicsQuery,
+  useUpdateTopicMutation,
+} from "./app/api";
 const Header = ({ title }) => {
   return (
     <header>
@@ -35,13 +41,14 @@ const Article = ({ title, body }) => {
     <article>
       <h2>{title}</h2>
       {body}
-      <Like></Like>
     </article>
   );
 };
 function Control({ onDelete }) {
+  const navigate = useNavigate();
   const params = useParams();
   const id = Number(params.id);
+  const [deleteTopic, info] = useDeleteTopicMutation();
   let contextUI = null;
   if (id) {
     contextUI = (
@@ -51,11 +58,12 @@ function Control({ onDelete }) {
         </li>
         <li>
           <button
-            onClick={() => {
-              onDelete(id);
+            onClick={async () => {
+              deleteTopic(id);
+              navigate(`/`);
             }}
           >
-            Delete
+            {info.isLoading ? "Deleting..." : "Delete"}
           </button>
         </li>
       </>
@@ -71,15 +79,18 @@ function Control({ onDelete }) {
   );
 }
 const Create = ({ onSave }) => {
-  const submitHandler = (evt) => {
-    // 기본 동작 금지
+  const navigate = useNavigate();
+  const [createTopic, info] = useCreateTopicMutation();
+  const submitHandler = async (evt) => {
     evt.preventDefault();
-    // get title, body
     const title = evt.target.title.value;
     const body = evt.target.body.value;
-    // onSave 를 호출한다.
-    onSave(title, body);
+    const result = await createTopic({ title, body });
+    navigate(`/read/${result.data.id}`);
   };
+  if (info.isLoading) {
+    return <>Creating....</>;
+  }
   return (
     <form onSubmit={submitHandler}>
       <p>
@@ -97,19 +108,24 @@ const Create = ({ onSave }) => {
 const Update = ({ onSave }) => {
   const params = useParams();
   const id = Number(params.id);
+  const { data, isLoading } = useGetTopicQuery(id);
+  const [updateTopic, info] = useUpdateTopicMutation();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    axios.get(`/topics/${id}`).then((result) => {
-      setTitle(result.data.title);
-      setBody(result.data.body);
-    });
-  }, [id]);
+    if (data !== undefined) {
+      setTitle(data.title);
+      setBody(data.body);
+    }
+  }, [data]);
+  if (isLoading) {
+    return <>Loading...</>;
+  }
   const submitHandler = (evt) => {
     evt.preventDefault();
     const title = evt.target.title.value;
     const body = evt.target.body.value;
-    onSave(id, title, body);
+    updateTopic({ id, title, body });
   };
   const titleHandler = (evt) => {
     setTitle(evt.target.value);
@@ -145,15 +161,15 @@ const Update = ({ onSave }) => {
 const Read = () => {
   const params = useParams();
   const id = Number(params.id);
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  useEffect(() => {
-    axios.get(`/topics/${id}`).then((result) => {
-      setTitle(result.data.title);
-      setBody(result.data.body);
-    });
-  }, [id]);
-  return <Article title={title} body={body}></Article>;
+  const { data, isLoading, isError } = useGetTopicQuery(id);
+  console.log(data, isLoading);
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+  if (isError) {
+    return <>Error...</>;
+  }
+  return <Article title={data.title} body={data.body} />;
 };
 const DarkMode = () => {
   const dispatch = useDispatch();
@@ -169,40 +185,13 @@ const DarkMode = () => {
       >
         {isDark ? "Light" : "Dark"}
       </button>
-      <button
-        onClick={() => {
-          dispatch(darkSlice.actions.toDark());
-        }}
-      >
-        Dark
-      </button>
-      <button
-        onClick={() => {
-          dispatch(darkSlice.actions.toLight());
-        }}
-      >
-        Light
-      </button>
-      <button
-        onClick={() => {
-          dispatch(darkSlice.actions.toggle());
-        }}
-      >
-        Toggle
-      </button>
     </div>
   );
 };
+
 function App() {
-  const [topics, setTopics] = useImmer([]);
   const isDark = useSelector((state) => state.darkmode.isDark);
-  const fetchTopics = async () => {
-    const topics = await axios.get("/topics");
-    setTopics(topics.data);
-  };
-  useEffect(() => {
-    fetchTopics();
-  }, []);
+  const { data: topicsData, isLoading: isTopicLoading } = useGetTopicsQuery();
   useEffect(() => {
     document.querySelector("html").style.filter = `invert(${
       isDark ? 100 : 0
@@ -211,32 +200,23 @@ function App() {
   const navigate = useNavigate();
   const createHandler = (title, body) => {
     axios.post("/topics", { title, body }).then((result) => {
-      setTopics((draft) => {
-        draft.push(result.data);
-      });
       navigate(`/read/${result.data.id}`);
     });
   };
   const updateHandler = (id, title, body) => {
     axios.patch(`/topics/${id}`, { title, body }).then((result) => {
-      setTopics((draft) => {
-        const index = draft.findIndex((t) => t.id === id);
-        draft[index].title = title;
-        draft[index].body = body;
-      });
       navigate(`/read/${id}`);
     });
   };
   const deleteHandler = async (id) => {
     await axios.delete(`/topics/${id}`);
-    fetchTopics();
     navigate("/");
   };
   return (
     <div className="App">
       <Header title="웹" />
       <DarkMode></DarkMode>
-      <Nav topics={topics} />
+      {isTopicLoading ? "Loading..." : <Nav topics={topicsData} />}
       <Routes>
         <Route
           path="/"

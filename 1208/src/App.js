@@ -1,4 +1,6 @@
 import "./App.css";
+import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
+import Container from "@mui/material/Container";
 import { useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -205,28 +207,36 @@ function App() {
     }%)`;
   }, [isDark]);
   return (
-    <div className="App">
-      <Header title="웹" /> <DarkMode></DarkMode>
-      {topicsIsLoading ? "Loading..." : <Nav topics={topics} />}
-      <Routes>
-        <Route
-          path="/"
-          element={<Article title="Hello" body="Welcome, WEB!" />}
-        ></Route>
-        <Route path="/create" element={<Create></Create>}></Route>
-        <Route path="/update/:id" element={<Update></Update>}></Route>
-        <Route path="/read/:id" element={<Read />}></Route>
-      </Routes>
-      <Routes>
-        <Route path="/" element={<Control></Control>} />
-        <Route path="/read/:id" element={<Control></Control>} />
-        <Route path="/create" element={<Control></Control>} />
-        <Route path="/update/:id" element={<Control></Control>} />
-      </Routes>
-      <Like />
-      <LikeServer />
-      {likesIsLoading ? "Loading..." : <>{likes.count}</>}
-    </div>
+    <Container maxWidth="sm">
+      <Header title="웹" />
+      <DarkMode></DarkMode>
+      <Grid2 container>
+        <Grid2 xs={12} sm={3}>
+          {" "}
+          {topicsIsLoading ? "Loading..." : <Nav topics={topics} />}
+        </Grid2>
+        <Grid2 xs={12} sm={9}>
+          <Routes>
+            <Route
+              path="/"
+              element={<Article title="Hello" body="Welcome, WEB!" />}
+            ></Route>
+            <Route path="/create" element={<Create></Create>}></Route>
+            <Route path="/update/:id" element={<Update></Update>}></Route>
+            <Route path="/read/:id" element={<Read />}></Route>
+          </Routes>
+          <Routes>
+            <Route path="/" element={<Control></Control>} />
+            <Route path="/read/:id" element={<Control></Control>} />
+            <Route path="/create" element={<Control></Control>} />
+            <Route path="/update/:id" element={<Control></Control>} />
+          </Routes>
+          <Like />
+          <LikeServer />
+          {likesIsLoading ? "Loading..." : <>{likes.count}</>}
+        </Grid2>
+      </Grid2>
+    </Container>
   );
 }
 

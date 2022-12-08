@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import darkSlice from "./features/dark/darkSlice";
-//import likeSlice from "./features/Like/likeSlice";
+import LikeServer from "./features/Like/LikeServer";
 import Like from "./features/Like/Like";
 import {
   useCreateTopicMutation,
   useDeleteTopicMutation,
   useGetTopicQuery,
   useGetTopicsQuery,
+  useGetLikesQuery,
   useUpdateTopicMutation,
 } from "./app/api";
 const Header = ({ title }) => {
@@ -194,6 +195,10 @@ function App() {
   // const topics = topicsQuery.data;
   // const topicsIsLoading = topicsQuery.isLoading;
   const { data: topics, isLoading: topicsIsLoading } = useGetTopicsQuery();
+  const { data: likes, isLoading: likesIsLoading } = useGetLikesQuery(
+    undefined,
+    { pollingInterval: 1000 }
+  );
   useEffect(() => {
     document.querySelector("html").style.filter = `invert(${
       isDark ? 100 : 0
@@ -201,8 +206,7 @@ function App() {
   }, [isDark]);
   return (
     <div className="App">
-      <Header title="웹" />
-      <DarkMode></DarkMode>
+      <Header title="웹" /> <DarkMode></DarkMode>
       {topicsIsLoading ? "Loading..." : <Nav topics={topics} />}
       <Routes>
         <Route
@@ -220,6 +224,8 @@ function App() {
         <Route path="/update/:id" element={<Control></Control>} />
       </Routes>
       <Like />
+      <LikeServer />
+      {likesIsLoading ? "Loading..." : <>{likes.count}</>}
     </div>
   );
 }

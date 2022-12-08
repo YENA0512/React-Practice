@@ -1,4 +1,7 @@
 {
+  "likes": {
+    "count": 30
+  },
   "topics": [
     {
       "id": 1,

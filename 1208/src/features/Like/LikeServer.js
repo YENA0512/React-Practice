@@ -1,17 +1,23 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useGetLikesQuery, useSetLikesMutation } from "../../app/api";
 import { up } from "./likeSlice";
 
 const LikeServer = () => {
-  const count = useSelector((state) => state.likes.count);
+  //const count = useSelector((state) => state.likes.count);
+  const { data, isLoading } = useGetLikesQuery();
+  const [setLikes] = useSetLikesMutation();
   const dispatch = useDispatch();
+  if (isLoading) {
+    return "Loading...";
+  }
   return (
     <div>
       <button
         onClick={() => {
-          dispatch(up());
+          setLikes({ count: data.count + 1 });
         }}
       >
-        좋아요({count})
+        좋아요({data.count})
       </button>
     </div>
   );

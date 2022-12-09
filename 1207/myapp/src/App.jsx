@@ -5,6 +5,7 @@ import SearchTextField from "./SearchTextField.jsx";
 import CardCount from "./CardCount.jsx";
 import TrackCard from "./TrackCard.jsx";
 import CourseCard from "./CourseCard.jsx";
+import Pagination from "./Pagination.jsx";
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +34,7 @@ const CoursesContainer = styled.div`
 export default function App() {
   const [currTab, setCurrTab] = useState("트랙");
   const [searchValue, setSearchValue] = useState("");
+  const [currPage, setCurrPage] = useState(0);
 
   const handleClickTab = (tab) => {
     if (tab !== currTab) setSearchValue("");
@@ -65,6 +67,11 @@ export default function App() {
             })}
         </CoursesContainer>
       )}
+      <Pagination
+        currPage={currPage}
+        onClickPage={setCurrPage}
+        pageCount={20}
+      />
     </Container>
   );
 }

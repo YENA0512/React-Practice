@@ -1,38 +1,70 @@
-import styled from "styled-components";
 import { useState } from "react";
-import CourseCard from "./CourseCard.jsx";
-import TrackCard from "./TrackCard.jsx";
+import styled from "styled-components";
 import Tab from "./Tab.jsx";
 import SearchTextField from "./SearchTextField.jsx";
 import CardCount from "./CardCount.jsx";
+import TrackCard from "./TrackCard.jsx";
+import CourseCard from "./CourseCard.jsx";
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   height: 100vh;
-  padding-top: 100px;
-  justify-content: center;
   width: 1232px;
   margin: auto;
+  padding-top: 100px;
+  flex-direction: column;
+`;
+
+const TracksContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 398px);
+  grid-column-gap: 19px;
+  grid-row-gap: 32px;
+`;
+
+const CoursesContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 296px);
+  grid-column-gap: 16px;
+  grid-row-gap: 24px;
 `;
 
 export default function App() {
-  const [value, setValue] = useState("");
   const [currTab, setCurrTab] = useState("트랙");
+  const [searchValue, setSearchValue] = useState("");
+
   const handleClickTab = (tab) => {
-    if (tab !== currTab) setValue("");
+    if (tab !== currTab) setSearchValue("");
     setCurrTab(tab);
   };
-  const handleChangeValue = (val) => {
-    setValue(val);
+
+  const handleChangeSearch = (val) => {
+    setSearchValue(val);
   };
+
   return (
     <Container>
-      <Tab currTab={currTab} onClick={handleClickTab}></Tab>
-      <SearchTextField value={value} onChange={handleChangeValue} />
+      <Tab currTab={currTab} onClick={handleClickTab} />
+      <SearchTextField value={searchValue} onChange={handleChangeSearch} />
       <CardCount />
-      {currTab === "트랙" ? <TrackCard /> : <CourseCard />}
+      {currTab === "트랙" ? (
+        <TracksContainer>
+          {Array(6)
+            .fill("")
+            .map((x, i) => {
+              return <TrackCard key={`trackcard-${i}`} />;
+            })}
+        </TracksContainer>
+      ) : (
+        <CoursesContainer>
+          {Array(8)
+            .fill("")
+            .map((x, i) => {
+              return <CourseCard key={`courseCard-${i}`} />;
+            })}
+        </CoursesContainer>
+      )}
     </Container>
   );
 }

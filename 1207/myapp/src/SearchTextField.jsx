@@ -31,14 +31,24 @@ SearchTextField.defaultProps = {
   onChange: () => {},
 };
 
+function debounce(func, timeout) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
 export default function SearchTextField({ value, onChange }) {
+  const debouncedOnChange = debounce(onChange, 500);
   return (
     <Container>
       <MagnifyingGlass />
       <Input
         placeholder="배우고 싶은 언어, 기술을 검색해 보세요."
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => debouncedOnChange(e.target.value)}
       />
     </Container>
   );

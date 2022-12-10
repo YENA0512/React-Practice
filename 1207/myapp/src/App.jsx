@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Tab from "./Tab.jsx";
 import SearchTextField from "./SearchTextField.jsx";
@@ -35,9 +36,14 @@ export default function App() {
   const [currTab, setCurrTab] = useState("트랙");
   const [searchValue, setSearchValue] = useState("");
   const [currPage, setCurrPage] = useState(0);
+  const [cardData, setCardData] = useState([]);
+  const [totalCardCount, setTotalCardCount] = useState(0);
 
   const handleClickTab = (tab) => {
-    if (tab !== currTab) setSearchValue("");
+    if (tab !== currTab) {
+      setSearchValue("");
+      setCurrPage(0);
+    }
     setCurrTab(tab);
   };
 
@@ -45,32 +51,59 @@ export default function App() {
     setSearchValue(val);
   };
 
+  useEffect(() => {
+    (async function () {
+      const API_END_POINT = "https://api-beta.elicer.io:6664/org/academy/";
+
+      if (currTab === "트랙") {
+        const filterConditions = searchValue
+          ? `filter_conditions=${JSON.stringfy({ title: searchValue })}&`
+          : "";
+        const offset = currPage * 6;
+        const trackUrl = `${API_END_POINT}track/list/?${filterConditions}offset=${offset}&count=6`;
+        const response = await axios.get(trackUrl);
+        console.log(response.data.track_count);
+        console.log(response.data.tracks);
+        setTotalCardCount(response.data.track_count);
+        setCardData(response.data.tracks);
+      }
+      if (currTab === "과목") {
+        const filterConditions = searchValue
+          ? `filter_conditions=${JSON.stringfy({ title: searchValue })}&`
+          : "";
+        const offset = currPage * 8;
+        const courseUrl = `${API_END_POINT}track/list/?${filterConditions}offset=${offset}&count=8`;
+        const response = await axios.get(courseUrl);
+        console.log(response.data.course_count);
+        console.log(response.data.courses);
+        setTotalCardCount(response.data.course_count);
+        setCardData(response.data.courses);
+      }
+    })();
+  }, [currTab, currPage, searchValue]);
+
   return (
     <Container>
       <Tab currTab={currTab} onClick={handleClickTab} />
       <SearchTextField value={searchValue} onChange={handleChangeSearch} />
-      <CardCount />
+      <CardCount count={totalCardCount} />
       {currTab === "트랙" ? (
         <TracksContainer>
-          {Array(6)
-            .fill("")
-            .map((x, i) => {
-              return <TrackCard key={`trackcard-${i}`} />;
-            })}
+          {cardData.map((track, i) => {
+            return <TrackCard title={track} key={`trackcard-${i}`} />;
+          })}
         </TracksContainer>
       ) : (
         <CoursesContainer>
-          {Array(8)
-            .fill("")
-            .map((x, i) => {
-              return <CourseCard key={`courseCard-${i}`} />;
-            })}
+          {cardData.map((title, i) => {
+            return <CourseCard key={`courseCard-${i}`} />;
+          })}
         </CoursesContainer>
       )}
       <Pagination
         currPage={currPage}
         onClickPage={setCurrPage}
-        pageCount={20}
+        pageCount={Math.ceil(totalCardCount / (currTab === "트랙" ? 6 : 8))}
       />
     </Container>
   );

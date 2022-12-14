@@ -156,6 +156,10 @@ header button {
 }
 .DiaryItem .btn_wrapper {
   min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .DiaryItem button {
   font-family: "Hahmlet";

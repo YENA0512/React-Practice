@@ -4,6 +4,7 @@ import MyButton from "../components/MyButton";
 import DiaryList from "../components/DiaryList";
 import { DiaryStateContext } from "../App";
 const Home = () => {
+  useEffect(() => {}, []);
   const diaryList = useContext(DiaryStateContext);
   const [data, setData] = useState([]);
   const [curDate, setCurDate] = useState(new Date());
